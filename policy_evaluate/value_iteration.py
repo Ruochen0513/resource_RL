@@ -1,98 +1,152 @@
+################## 值迭代算法实现（含gamma）#########################
 import numpy as np
-from gymnasium.envs.toy_text.taxi import TaxiEnv
-import time
-def update_policy(r_sa, P_ssa, V, gamma=1):
-    num_states, num_actions = r_sa.shape
-    Pi_new = np.zeros((num_states, num_actions))
-    for s in range(num_states):
-        q_values = np.zeros(num_actions)
-        for a in range(num_actions):
-            q_values[a] = r_sa[s, a] + gamma * np.dot(P_ssa[a, s, :], V)
-        best_action = np.argmax(q_values)
-        Pi_new[s, best_action] = 1.0
+import gymnasium as gym
+
+def update_policy(r_sa, P_ssa, V, gamma):  # 添加gamma参数
+    Pi_new = np.zeros((16, 4))
+    for i in range(16):
+        q_sa = np.zeros(4)
+        for j in range(4):
+            # 直接计算每个动作的Q值
+            P_pi = P_ssa[j, i, :]  # 动作j的转移概率
+            q_sa[j] = r_sa[i, j] + gamma * np.dot(P_pi, V.squeeze())  # 添加gamma
+        max_num = np.argmax(q_sa)
+        Pi_new[i, max_num] = 1
     return Pi_new
 
-def value_iteration(Pi_0, r_sa, P_ssa, V_init, gamma=1, tol=1e-6, max_iter=10000):
-    Pi_cur = Pi_0.copy()
-    V_cur = V_init.copy()
+def value_iteration(Pi_0, r_sa, P_ssa, V_init, gamma, tol=1e-6):  # 添加gamma参数
+    V_cur = V_init
     iter_num = 0
-
-    while True:
-        # 策略评估
-        C_pi = (Pi_cur * r_sa).sum(axis=1, keepdims=True)
-        P_pi = np.einsum('sa,ast->st', Pi_cur, P_ssa)
-        V_hat = C_pi + gamma * np.dot(P_pi, V_cur)
-        
-        # 检查收敛
-        delta = np.max(np.abs(V_hat - V_cur))
-        V_cur = V_hat.copy()
-        
-        # 策略改进
-        Pi_new = update_policy(r_sa, P_ssa, V_cur.squeeze(), gamma)
-        
-        iter_num += 1
-        if delta < tol or iter_num >= max_iter:
-            break
-            
-        Pi_cur = Pi_new.copy()
-
-    return Pi_cur, iter_num
-
-
-################## 策略演示函数 #########################
-def demonstrate_policy(env, policy, render_mode='human', delay=0.5):
-    state, _ = env.reset()
-    total_reward = 0
-    steps = 0
     
     while True:
-        # 获取当前状态的有效动作
-        valid_actions = np.where(env.action_mask(state))[0]
+        # 值函数更新
+        V_next = np.zeros_like(V_cur)
+        for i in range(16):
+            q_values = [r_sa[i, a] + gamma * np.dot(P_ssa[a, i, :], V_cur.squeeze()) 
+                       for a in range(4)]
+            V_next[i] = np.max(q_values)  # 直接取最大Q值
         
-        # 选择最优策略中的有效动作
-        action_probs = policy[state]
-        valid_probs = action_probs[valid_actions]
-        action = valid_actions[np.argmax(valid_probs)]
+        delta = np.linalg.norm(V_next - V_cur)
+        V_cur = V_next
+        iter_num += 1
         
-        next_state, reward, done, _, _ = env.step(action)
+        if delta < tol:
+            break
+    
+    # 最终策略提取
+    Pi_optim = update_policy(r_sa, P_ssa, V_cur, gamma)
+    return Pi_optim, iter_num
+
+# 成功率测试函数
+def test_policy(policy, num_episodes=1000):
+    test_env = gym.make('FrozenLake-v1', is_slippery=True, render_mode=None)
+    success = 0
+    
+    for _ in range(num_episodes):
+        state, _ = test_env.reset()
+        done = False
         
-        if render_mode == 'human':
+        while not done:
+            action = np.argmax(policy[state])
+            next_state, reward, done, _, _ = test_env.step(action)
+            state = next_state
+            
+            if done and reward == 1:
+                success += 1
+                
+    test_env.close()
+    return success / num_episodes
+
+def visualize_policy(policy, env):
+    # 获取环境布局描述
+    desc = env.unwrapped.desc  # 4x4的字符矩阵
+    
+    # 动作到箭头的映射
+    arrow_map = {
+        0: '←',  # 左
+        1: '↓',  # 下
+        2: '→',  # 右
+        3: '↑'   # 上
+    }
+    
+    # 构建可视化矩阵
+    grid = []
+    for row in range(4):
+        current_row = []
+        for col in range(4):
+            state = row * 4 + col
+            cell_char = desc[row, col].decode('utf-8')
+            
+            # 处理特殊单元格
+            if cell_char == 'H':
+                current_row.append('⛳')  # 冰洞
+            elif cell_char == 'G':
+                current_row.append('🎯')  # 目标
+            else:
+                # 获取该状态的最优动作
+                action = np.argmax(policy[state])
+                current_row.append(arrow_map[action])
+        grid.append(current_row)
+    
+    # 打印可视化结果
+    print("\n最优策略可视化：")
+    print("+" + "-"*13 + "+")
+    for i, row in enumerate(grid):
+        print("| " + " | ".join(row) + " |")
+        if i < 3: 
+            print("|" + "----+---+---+----" + "|")
+    print("+" + "-"*13 + "+")
+
+def show(env, policy, render=False):
+    state, _ = env.reset()
+    done = False
+    while not done:
+        if render:
             env.render()
-            time.sleep(delay)
-        
-        total_reward += reward
-        steps += 1
+        action = np.argmax(policy[state])
+        next_state, reward, done, truncated, _ = env.step(action)
         state = next_state
-        
-        if done:
-            print(f"演示完成! 总奖励: {total_reward}, 步数: {steps}")
+        if truncated:
             break
 
 if __name__ == '__main__':
-    # 初始化环境
-    env = TaxiEnv(render_mode='human')
-    num_states = env.observation_space.n
-    num_actions = env.action_space.n
-
-    # 构建状态转移矩阵和奖励矩阵
-    P_ssa = np.zeros((num_actions, num_states, num_states))
-    r_sa = np.zeros((num_states, num_actions))
+    # 创建环境
+    env = gym.make('FrozenLake-v1', map_name="4x4", 
+                  is_slippery=True, render_mode="human").unwrapped
     
-    for s in range(num_states):
-        for a in range(num_actions):
-            transitions = env.P[s][a]
-            for prob, next_state, reward, _ in transitions:
-                P_ssa[a, s, next_state] += prob
+    # 初始化转移矩阵和奖励矩阵
+    nS = env.observation_space.n
+    nA = env.action_space.n
+    P_ssa = np.zeros((nA, nS, nS))
+    r_sa = np.zeros((nS, nA))
+    
+    for s in range(nS):
+        for a in range(nA):
+            for (prob, next_s, reward, _) in env.P[s][a]:
+                P_ssa[a, s, next_s] += prob
                 r_sa[s, a] += prob * reward
 
-    # 初始化参数
-    Pi_0 = np.ones((num_states, num_actions)) / num_actions  
-    # 均匀随机策略
-    V_init = np.zeros((num_states, 1))
-    
-    # 运行值迭代
-    Pi_optim, iter_num = value_iteration(Pi_0, r_sa, P_ssa, V_init, gamma=1)
+    # 执行值迭代
+    Pi_optim, iter_num = value_iteration(
+        Pi_0=np.ones((nS, nA))/nA,  # 初始随机策略
+        r_sa=r_sa,
+        P_ssa=P_ssa,
+        V_init=np.zeros((nS, 1)),
+        gamma=1  # 可调整参数
+    )
     
     # 输出结果
-    print(f"收敛所需迭代次数: {iter_num}")
-    demonstrate_policy(env, Pi_optim, render_mode='human', delay=0.5)
+    print(f"迭代次数: {iter_num}")
+    print("最优策略矩阵:")
+    print(Pi_optim)
+    
+    # 测试成功率
+    success_rate = test_policy(Pi_optim)
+    print(f"\n成功率: {success_rate*100:.2f}%")
+
+    # 可视化策略
+    visualize_policy(Pi_optim, env)
+    # 策略演示
+    show(env, Pi_optim)
+    
+
