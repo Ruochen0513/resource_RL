@@ -73,7 +73,7 @@ class FrozenLakeEnv:
         self.update_target_policy()
         self.update_behaviour_policy()
         
-        while num < 6000:
+        while num < 40000:
             num += 1
             flag = False
             state_traj = []

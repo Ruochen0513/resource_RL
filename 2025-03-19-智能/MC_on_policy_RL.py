@@ -67,7 +67,7 @@ class FrozenLakeEnv:
 
     def MC_learning(self):
         num = 0
-        while num < 6000:
+        while num < 40000:
             num += 1
             flag = False
             state_traj = []
