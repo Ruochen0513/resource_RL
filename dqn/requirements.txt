@@ -1,0 +1,9 @@
+ale_py==0.8.1
+gymnasium==0.29.1
+matplotlib==3.5.1
+numpy==1.21.5
+numpy==1.23.5
+numpy==1.22.3
+opencv_python==4.10.0.84
+opencv_python_headless==4.11.0.86
+torch==1.12.1+cu113

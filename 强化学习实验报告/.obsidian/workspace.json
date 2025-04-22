@@ -1,0 +1,192 @@
+{
+  "main": {
+    "id": "91094e3deb6781c8",
+    "type": "split",
+    "children": [
+      {
+        "id": "b89e7ba55b650a87",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "396ebe143b1f3783",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "sixth/第六次作业实验报告.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "第六次作业实验报告"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "831dff5d612cffff",
+    "type": "split",
+    "children": [
+      {
+        "id": "c387453b0dbe244f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b3b7bd369004ad7e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "066de67c23655953",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "04ae42728c69a102",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0e1d76940af796da",
+    "type": "split",
+    "children": [
+      {
+        "id": "26df73030d584010",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d2818ecd0956caa5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "sixth/第六次作业实验报告.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "第六次作业实验报告 的反向链接列表"
+            }
+          },
+          {
+            "id": "214df3b8717f2fc5",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "sixth/第六次作业实验报告.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "第六次作业实验报告 的出链列表"
+            }
+          },
+          {
+            "id": "c142cda40e45fdbe",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "b65061928a0c9133",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "sixth/第六次作业实验报告.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "第六次作业实验报告 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "markdown-importer:打开 Markdown 格式转换器": false
+    }
+  },
+  "active": "396ebe143b1f3783",
+  "lastOpenFiles": [
+    "sixth/assets/pong.gif",
+    "sixth/assets/montezuma_revenge.gif",
+    "sixth/assets/breakout.gif",
+    "sixth/assets/atlantis.gif",
+    "sixth/assets/result-steps.png",
+    "sixth/assets/result-score.png",
+    "sixth/assets/result-score-per-step.png",
+    "sixth/assets/result-10,000,000steps.png",
+    "sixth/assets",
+    "task_mock.md",
+    "sixth/pong.gif",
+    "sixth/第六次作业实验报告.md",
+    "截屏-20250416135723-673x389.png",
+    "第6次作业延交申请.md",
+    "sixth/atlantis.gif",
+    "third/第三次作业实验报告.md",
+    "未命名"
+  ]
+}
